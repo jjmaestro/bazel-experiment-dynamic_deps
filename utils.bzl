@@ -109,8 +109,6 @@ def _product_macro(name, macro, targets, default):
         visibility = ["//visibility:public"],
     )
 
-    return targets
-
 product = struct(
     args = _product_args,
     kwargs = _product_kwargs,

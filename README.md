@@ -170,7 +170,11 @@ INFO: Build completed successfully, 2 total actions
 //foo:foo~dim_1.2~dim_2.C
 ```
 
-Q: Is this the only and/or the best way to achieve this? :-?
+## Attempt 3
 
-Q: Now that I got the `genquery` working, can I use the results in the
-   `build_all` macro? How?
+I couldn't come up with an easy / easier way that would use the results from
+`genquery` so I decided to refactor the code and have a (hopefully) cleaner way
+to create the Cartesian arguments since that's actually the only thing we need
+to make the dependency target label.
+
+Q: Can I use [`aspects`](https://bazel.build/extending/aspects) to do the same?

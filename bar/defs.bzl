@@ -1,26 +1,21 @@
-load("//:utils.bzl", "CartesianTarget")
-load("//foo:defs.bzl", "foo_build_all")
+load("//:utils.bzl", "product")
+load("//foo:defs.bzl", "DEFAULT_TARGET", "TARGETS")
 
-def bar_build(name, target):
-    src = "//foo:%s" % target.foo_target_name
+def _bar_build(name, foo_target):
+    src = "//foo:%s" % foo_target.name
 
     native.genrule(
-        name = target.name,
+        name = name,
         srcs = [src],
-        outs = ["%s.txt" % target.name],
+        outs = ["%s.txt" % name],
         cmd = """
         {{
             echo "name: //bar:{name}"
             echo "src:  {src}"
             cat $(location {src})
         }} > $@
-        """.format(name = target.name, src = src),
+        """.format(name = name, src = src),
     )
 
-    return target
-
-def bar_build_all(name):
-    return [
-        bar_build(name, CartesianTarget(name, foo_target_name = foo_target.name))
-        for foo_target in foo_build_all("foo")
-    ]
+def bar_build_all(name, dim1 = None, dim2 = None):
+    product.macro("bar", _bar_build, TARGETS, DEFAULT_TARGET)
