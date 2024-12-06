@@ -1,0 +1,5 @@
+module(
+    name = "bazel_experiment_dynamic_deps",
+    version = "0.0.1",
+    bazel_compatibility = [">=7.4.0"],
+)
