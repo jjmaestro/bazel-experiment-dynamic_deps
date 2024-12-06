@@ -100,6 +100,15 @@ def _product_macro(name, macro, targets, default):
         visibility = ["//visibility:public"],
     )
 
+    # NOTE:
+    # This is needed to put all build_names in the :all_targets
+    # scope so that we can get them in a genquery.
+    native.filegroup(
+        name = "all_targets",
+        srcs = [target.name for target in targets],
+        visibility = ["//visibility:public"],
+    )
+
     return targets
 
 product = struct(
