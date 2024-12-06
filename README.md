@@ -50,3 +50,40 @@ with `//foo` targets:
 //bar:foo~dim_1.2~dim_2.B
 //bar:foo~dim_1.2~dim_2.C
 ```
+
+## Attempt 2
+
+Then, I was hoping to be able to use `genquery` to get a list of `//foo`
+targets and, somehow, use it in `//bar`'s `baz_build_all` macro:
+
+```starlark
+genquery(
+    name = "foo_all",
+    expression = 'filter("^//foo:foo~", //foo:all)',
+    scope = ["//foo"],
+)
+```
+
+However, the `genquery` was failing with a "target not within the scope of the
+query" error:
+
+```shell
+/src/workspace$ bazel build //bar:foo_all
+ERROR: /src/workspace/bar/BUILD:3:9: in genquery rule //bar:foo_all: query failed: Evaluation failed: target '//foo:foo~dim_1.1~dim_2.B' is not within the scope of the query
+ERROR: /src/workspace/bar/BUILD:3:9: Analysis of target '//bar:foo_all' failed
+ERROR: Analysis of target '//bar:foo_all' failed; build aborted
+INFO: Elapsed time: 0.095s, Critical Path: 0.00s
+INFO: 1 process: 1 internal.
+ERROR: Build did NOT complete successfully
+```
+
+The same query works in the CLI:
+```shell
+/src/workspace$ bazel query 'filter("^//foo:foo~", //foo:all)'
+//foo:foo~dim_1.1~dim_2.A
+//foo:foo~dim_1.1~dim_2.B
+//foo:foo~dim_1.1~dim_2.C
+//foo:foo~dim_1.2~dim_2.A
+//foo:foo~dim_1.2~dim_2.B
+//foo:foo~dim_1.2~dim_2.C
+```
